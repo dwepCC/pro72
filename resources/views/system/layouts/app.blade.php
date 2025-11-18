@@ -27,9 +27,9 @@
     <link rel="stylesheet" href="{{ asset('porto-light/vendor/select2/css/select2.css') }}" />
     <link rel="stylesheet" href="{{ asset('porto-light/vendor/select2-bootstrap-theme/select2-bootstrap.min.css') }}" />
     <link rel="stylesheet" href="{{ asset('porto-light/vendor/datatables/media/css/dataTables.bootstrap4.css') }}" />
-    <link rel="stylesheet" href="{{ asset('porto-light/css/theme.css') }}" />
-    <link rel="stylesheet" href="{{ asset('porto-light/css/custom.css') }}" />
-    <link rel="stylesheet" href="{{ asset('theme/admin_styles.css') }}" />
+    <link rel="stylesheet" href="{{ asset('porto-light/css/theme.css') }}?v=0.0.1" />
+    <link rel="stylesheet" href="{{ asset('porto-light/css/custom.css') }}?v=0.0.1" />
+    <link rel="stylesheet" href="{{ asset('theme/admin_styles.css') }}?v=0.0.2" />
     @if (file_exists(public_path('theme/custom_styles.css')))
         <link rel="stylesheet" href="{{ asset('theme/custom_styles.css') }}" />
     @endif

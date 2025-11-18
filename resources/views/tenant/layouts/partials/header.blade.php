@@ -1,5 +1,10 @@
 <header class="header">
     <div class="logo-container">        
+        <div class="sidebar-toggle" data-toggle-class="sidebar-left-collapsed" data-target="html"
+            data-fire-event="sidebar-left-toggle">
+            <i class="fas fa-angle-left" aria-label="Toggle sidebar"></i>
+            <i class="fas fa-angle-right" aria-label="Toggle sidebar"></i>
+        </div>        
         <div class="d-md-none toggle-sidebar-left" data-toggle-class="sidebar-left-opened" data-target="html"
             data-fire-event="sidebar-left-opened">
             <div style="width: 24px; height: 24px; display: flex; align-items: center;">
@@ -20,7 +25,26 @@
             </div>
             <h2>Modulos</h2>
         </div>
-        <tenant-dialog-header-menu></tenant-dialog-header-menu>
+        {{--<tenant-dialog-header-menu></tenant-dialog-header-menu>--}}
+        {{--tukifac--}}
+            <div class="d-none ml-1 d-lg-block" style="height: inherit;">
+                <a href="/documents/create" title="Nuevo comprobante" data-placement="bottom" data-toggle="tooltip" class="topbar-links"><span>
+                    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path stroke="none" d="M0 0h24v24H0z" fill="none"></path><path d="M14 3v4a1 1 0 0 0 1 1h4"></path><path d="M19 12v7a1.78 1.78 0 0 1 -3.1 1.4a1.65 1.65 0 0 0 -2.6 0a1.65 1.65 0 0 1 -2.6 0a1.65 1.65 0 0 0 -2.6 0a1.78 1.78 0 0 1 -3.1 -1.4v-14a2 2 0 0 1 2 -2h7l5 5v4.25"></path></svg>
+                    </span> <span>NC</span>
+                </a>
+                
+                <a href="/sale-notes" title="Notas de Venta" data-placement="bottom" data-toggle="tooltip" class="topbar-links"><span>
+                    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path stroke="none" d="M0 0h24v24H0z" fill="none"></path><path d="M5 4v17l2 -2l2 2l2 -2l2 2l2 -2l2 2l2 -2v-17z"></path><path d="M14 8h-4"></path><path d="M14 12h-4"></path><path d="M14 16h-4"></path></svg>
+                    </span> <span>NV</span>
+                </a>
+
+                <a href="/pos" title="Punto de venta" data-placement="bottom" data-toggle="tooltip" class="topbar-links"><span>
+                    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 640 640" fill="currentColor"><path d="M0 72C0 58.7 10.7 48 24 48L69.3 48C96.4 48 119.6 67.4 124.4 94L162.6 304L472.4 304C483.9 304 493.8 295.8 496 284.5L528.4 115.5C530.9 102.5 543.5 94 556.5 96.5C569.5 99 578 111.6 575.5 124.6L543.1 293.6C536.6 327.5 506.9 352 472.4 352L171.4 352L176.5 380.3C178.6 391.7 188.5 400 200.1 400L456 400C469.3 400 480 410.7 480 424C480 437.3 469.3 448 456 448L200.1 448C165.3 448 135.5 423.1 129.3 388.9L77.2 102.6C76.5 98.8 73.2 96 69.3 96L24 96C10.7 96 0 85.3 0 72zM160 528C160 501.5 181.5 480 208 480C234.5 480 256 501.5 256 528C256 554.5 234.5 576 208 576C181.5 576 160 554.5 160 528zM384 528C384 501.5 405.5 480 432 480C458.5 480 480 501.5 480 528C480 554.5 458.5 576 432 576C405.5 576 384 554.5 384 528zM320 64C333.3 64 344 74.7 344 88L344 136L392 136C405.3 136 416 146.7 416 160C416 173.3 405.3 184 392 184L344 184L344 232C344 245.3 333.3 256 320 256C306.7 256 296 245.3 296 232L296 184L248 184C234.7 184 224 173.3 224 160C224 146.7 234.7 136 248 136L296 136L296 88C296 74.7 306.7 64 320 64z"></path></svg>
+                    </span> <span>POS</span>
+                </a>
+            </div>
+
+        {{--end tukifac--}}
 
         @if ($tenant_show_ads && $url_tenant_image_ads)
             <div class="ms-3 me-3">
@@ -34,22 +58,50 @@
 
         <div class="logo-container-mobile">
             <a href="{{route('tenant.dashboard.index')}}" class="logo pt-2 pt-md-0">
-                @if($vc_company->logo)
+                {{--@if($vc_company->logo)
                     <img src="{{ asset('storage/uploads/logos/' . $vc_company->logo) }}" alt="Logo" class="logo-light"
                         style="{{ $vc_company->logo_dark ? '' : '--show-light-logo: block;' }}" />
-                @else
-                    <img src="{{ asset('logo/tulogo.png') }}" alt="Logo" />
-                @endif
+                @else--}}
+                    <img src="{{ asset('logo/Tukifac-large-ver-2.webp') }}" alt="Logo" />
+                {{--@endif
 
                 @if($vc_company->logo_dark)
                     <img src="{{ asset('storage/uploads/logos/' . $vc_company->logo_dark) }}" alt="Logo" class="logo-dark" />
-                @endif
+                @endif--}}
             </a>
         </div>
 
         <div class="options-user-mobile">
             <i class="fas fa-bars"></i>
         </div>
+
+        <!--tukifac-->
+        <div class="payment-status-card" id="paymentStatusCard">
+            <div class="payment-status-header">
+                <div class="">
+                <span class="days-count" id="plan_name">Plan: Cargando...</span><span id="days_indicator" class="info-row"></span>
+                </div>
+                <span class="payment-status" id="status_plan">Cargando...</span>
+            </div>
+            <div class="payment-due-date">
+                Fecha de pago: <span class="date" id="payment_date">Cargando...</span>
+            </div>
+
+            <div class="card-content" id="cardContent">
+                {{--<div class="info-row" id="days_info_row" style="display: none;">
+                    <strong>Estado del pago:</strong>
+                    <span id="days_info" class="days-status">Cargando...</span>
+                </div>--}}
+                
+                {{--<div class="pending-payment-section" style="display: none;">
+                    <div class="alert alert-warning">
+                        <strong>Tienes un pago pendiente</strong>
+                    </div>
+                </div>--}}
+            </div>
+        </div>
+        <!--end tukifac-->
+        
     </div>
     <div class="header-right">
         <div class="dropdown-menu-mobile" style="display: none;">
@@ -256,7 +308,7 @@
                         </a>
                     </li>
                 @endif
-                <li>
+                {{--<li>
                     <a class="style-switcher-open notification-icon text-secondary navigation-options" href="#">
                         <span>
                             <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24"
@@ -279,7 +331,7 @@
                             <path d="M9 6l6 6l-6 6" />
                         </svg>
                     </a>
-                </li>
+                </li>--}}
             </ul>
 
             <ul class="log-out-container">
@@ -304,6 +356,12 @@
             </ul>
         </div>
         <ul class="notifications mx-2">
+            <li class="lt-soporte">
+                <a target="_blank" href="https://wa.me/51916996847" style="display: inline-flex; align-items: center; gap: 0.4rem; font-size: 0.9rem; background: linear-gradient(135deg, #28a745, #28a745); border-radius: 0.375rem; padding: 0.5rem 0.8rem; text-decoration: none; color: white; font-weight: 500;">
+                    <i class="fab fa-whatsapp" style="font-size: 1.1rem;"></i>
+                    Soporte
+                </a>
+            </li>
             @php
                 $is_pse = $vc_company->send_document_to_pse;
                 $environment = 'SUNAT';
@@ -487,6 +545,58 @@
                         </a>
                     </li>
                     <li class="divider divider-theme-black" style="display: none"></li>
+                                        <!--tukifac-->
+                    @if(in_array('users', $vc_module_levels))
+                    <li>
+                        <a class="nav-link" href="{{route('tenant.users.index')}}">
+                            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none"
+                                stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"
+                                class="icon icon-tabler icons-tabler-outline icon-tabler-users">
+                                <path stroke="none" d="M0 0h24v24H0z" fill="none" />
+                                <path d="M9 7m-4 0a4 4 0 1 0 8 0a4 4 0 1 0 -8 0" />
+                                <path d="M3 21v-2a4 4 0 0 1 4 -4h4a4 4 0 0 1 4 4v2" />
+                                <path d="M16 3.13a4 4 0 0 1 0 7.75" />
+                                <path d="M21 21v-2a4 4 0 0 0 -3 -3.85" />
+                            </svg>
+                            Usuarios</a>
+                    </li> 
+                @endif
+                                @if(in_array('users_establishments', $vc_module_levels))
+                    <li>
+                        <a class="nav-link" href="{{route('tenant.establishments.index')}}">
+                            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none"
+                                stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"
+                                class="icon icon-tabler icons-tabler-outline icon-tabler-list-numbers">
+                                <path stroke="none" d="M0 0h24v24H0z" fill="none" />
+                                <path d="M11 6h9" />
+                                <path d="M11 12h9" />
+                                <path d="M12 18h8" />
+                                <path d="M4 16a2 2 0 1 1 4 0c0 .591 -.5 1 -1 1.5l-3 2.5h4" />
+                                <path d="M6 10v-6l-2 2" />
+                            </svg>
+                            Sucursales & Series</a>
+                    </li>
+                @endif
+                
+                               
+                    <li>
+                        <a class="nav-link" href="https://www.mediafire.com/file/0nngrr7hgmdrkvd/app-tukifac.apk/file">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="icon icon-tabler icons-tabler-outline icon-tabler-packages">
+                                <path stroke="none" d="M0 0h24v24H0z" fill="none"></path>
+                                <path d="M7 16.5l-5 -3l5 -3l5 3v5.5l-5 3z"></path>
+                                <path d="M2 13.5v5.5l5 3"></path>
+                                <path d="M7 16.545l5 -3.03"></path>
+                                <path d="M17 16.5l-5 -3l5 -3l5 3v5.5l-5 3z"></path>
+                                <path d="M12 19l5 3"></path>
+                                <path d="M17 16.5l5 -3"></path>
+                                <path d="M12 13.5v-5.5l-5 -3l5 -3l5 3v5.5"></path>
+                                <path d="M7 5.03v5.455"></path>
+                                <path d="M12 8l5 -3"></path>
+                            </svg>
+                             APP</a>
+                    </li>
+                
+                <!--end tukifac-->
                     @if(in_array('cuenta', $vc_modules))
                         @if(in_array('account_users_list', $vc_module_levels))
                             <li>
@@ -507,7 +617,7 @@
                             </li>
                         @endif
                     @endif
-                    <li>
+                    {{--<li>
                         <a class="dropdown-item d-flex align-items-center style-switcher-open" href="#">
                             <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24"
                                 fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
@@ -521,8 +631,25 @@
                                     d="M10 15m0 1a1 1 0 0 1 1 -1h2a1 1 0 0 1 1 1v4a1 1 0 0 1 -1 1h-2a1 1 0 0 1 -1 -1z" />
                             </svg>
                             Estilos y temas</a>
+                    </li>--}}
+                    <!--tukifac-->
+                    @if(in_array('configuration', $vc_modules))
+                    <li
+                        class="nav-active">
+                        <a class="nav-link" href="{{ url('list-settings') }}">
+                            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none"
+                                stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"
+                                class="icon icon-tabler icons-tabler-outline icon-tabler-briefcase">
+                                <path stroke="none" d="M0 0h24v24H0z" fill="none" />
+                                <path d="M3 7m0 2a2 2 0 0 1 2 -2h14a2 2 0 0 1 2 2v9a2 2 0 0 1 -2 2h-14a2 2 0 0 1 -2 -2z" />
+                                <path d="M8 7v-2a2 2 0 0 1 2 -2h4a2 2 0 0 1 2 2v2" />
+                                <path d="M12 12l0 .01" />
+                                <path d="M3 13a20 20 0 0 0 18 0" />
+                            </svg>
+                            Configuraciones Globales</a>
                     </li>
-
+                @endif
+                <!--end tukifac-->
                     <li class="divider my-2"></li>
 
                     <li class="multi-user-content px-4 pb-1">
@@ -686,3 +813,74 @@
         </div>
     </div>
 </div> --}}
+
+@push('scripts')
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@7.31.1/dist/sweetalert2.all.min.js"></script>
+
+<script> 
+/*tukifac*/
+
+function showInfoPlan(){
+    $.ajax({
+        url: "{{ url('cuenta/info_plan') }}",
+        method: 'get',
+        dataType: 'JSON',
+        success: function (data) {
+            console.log('Datos recibidos:', data);
+            if (data.success == true) {
+                $('#plan_name').text('Plan: ' + data.plan_name);
+                $('#status_plan').text(data.status_plan);
+                
+                // Mostrar fecha de pago (si hay pago pendiente)
+                //if (data.has_pending_payment) {
+                    $('#payment_date').text(data.payment_date);
+                  //  $('#payment_date_row').show(); // Mostrar la fila de fecha de pago
+                /*} else {
+                    $('#payment_date_row').hide(); // Ocultar la fila de fecha de pago
+                }*/
+                
+                // Evaluar qué información de días mostrar
+                const daysInfoElement = $('#days_indicator');
+                daysInfoElement.removeClass('text-warning text-danger text-success');
+                
+                if (data.days_overdue > 0) {
+                    // Mostrar días vencidos
+                    daysInfoElement.text( data.days_overdue + ' día(s) de atraso');
+                    daysInfoElement.addClass('text-danger');
+                    $('#days_indicator').show();
+                } else if (data.days_remaining > 0) {
+                    // Mostrar días faltantes
+                    daysInfoElement.text(data.days_remaining + ' día(s) restantes');
+                    daysInfoElement.addClass('text-warning');
+                    $('#days_indicator').show();
+                } else {
+                    if (data.has_pending_payment) {
+                        daysInfoElement.text('Fecha de pago hoy');
+                        daysInfoElement.addClass('text-warning');
+                        $('#days_indicator').show();
+                    } else {
+                        $('#days_indicator').hide(); // Ocultar si no hay información de días
+                    }
+                }
+                
+                // Mostrar/u ocultar sección de pago pendiente
+                if (data.has_pending_payment) {
+                    $('.pending-payment-section').show();
+                } else {
+                    $('.pending-payment-section').hide();
+                }
+            }
+        },
+        error: function (error_data) {
+            console.log('Error:', error_data);
+        }
+    });
+}
+
+$(document).ready(function() {
+    // Se ejecuta cuando el DOM está completamente cargado
+    showInfoPlan();
+});
+/*tukifac*/
+</script>
+@endpush

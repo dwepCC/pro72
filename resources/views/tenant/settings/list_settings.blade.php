@@ -61,9 +61,9 @@
                     <li>
                         <a href="{{route('tenant.bussiness_turns.index')}}">Giro de negocio</a>
                     </li>
-                    <li>
+                    {{--<li>
                         <a href="#" class="style-switcher-open">Estilos y temas</a>
-                    </li>
+                    </li>--}}
                     <li>
                         <a href="{{route('tenant.advanced.index')}}">Avanzado</a>
                     </li>

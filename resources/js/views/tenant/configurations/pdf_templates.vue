@@ -112,7 +112,7 @@ background-color: #d3dce6;
     border: 2px solid #bad6f1;
 }
 .pdf-template-border.active-border {
-    border: 2px solid #409eff;
+    border: 2px solid #004387;
 }
 .radio-button {
     display: flex;
@@ -130,10 +130,10 @@ background-color: #d3dce6;
 .radio-button:hover {
     border-color: #c6e2ff;
     background-color: #ecf5ff;
-    color: #409EFF;
+    color: #004387;
 } 
 .radio-button.el-radio--checked {
-    background-color: #409eff;
+    background-color: #004387;
     color: #fff;
 } 
 .radio-button span {

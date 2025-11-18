@@ -236,15 +236,8 @@
                                 class="btn btn-custom btn-sm mt-2 me-2 mb-3 primary-buton pull-end"
                                 type="button"
                                 @click.prevent="clickCreate()"
-                                v-bind:disabled="!checkLimitUsers || isLoading"
                             >
-                                <i :class="{ 
-                                    'fa-plus-circle': checkLimitUsers, 
-                                    'fa-exclamation-circle': !checkLimitUsers 
-                                    }"
-                                    class="fa"
-                                ></i>
-                                {{ checkLimitUsers ? 'Nuevo' : 'Clientes máximos creados. Actualice su plan llamando al 944999965' }}
+                                <i class="fa fa-plus-circle"></i> Nuevo
                             </button>
                         </div>
                     </div>
@@ -329,6 +322,63 @@
                             </el-select>
                         </div>
                     </div>
+                    
+                    <!-- Filtro de Rango de Fechas -->
+                    <div class="row mt-3">
+                        <div class="col-12">
+                            <div class="date-filter-section p-3 border rounded">
+                                <h6 class="mb-3">
+                                    <i class="fa fa-calendar"></i> Filtro por Rango de Fechas
+                                    <!----<small class="text-muted">(Aplicado a nivel servidor)</small>-->
+                                </h6>
+                                <div class="row">
+                                    <div class="form-group col-lg-4 col-md-6 col-sm-12 mb-2">
+                                        <label class="control-label mb-1">Fecha Inicio:</label>
+                                        <el-date-picker
+                                            v-model="dateFilters.startDate"
+                                            type="date"
+                                            placeholder="Seleccionar fecha inicio"
+                                            style="width: 100%;"
+                                            format="dd/MM/yyyy"
+                                            value-format="yyyy-MM-dd"
+                                            @change="onDateFilterChange">
+                                        </el-date-picker>
+                                    </div>
+                                    <div class="form-group col-lg-4 col-md-6 col-sm-12 mb-2">
+                                        <label class="control-label mb-1">Fecha Fin:</label>
+                                        <el-date-picker
+                                            v-model="dateFilters.endDate"
+                                            type="date"
+                                            placeholder="Seleccionar fecha fin"
+                                            style="width: 100%;"
+                                            format="dd/MM/yyyy"
+                                            value-format="yyyy-MM-dd"
+                                            @change="onDateFilterChange">
+                                        </el-date-picker>
+                                    </div>
+                                    <div class="form-group col-lg-4 col-md-12 col-sm-12 mb-2 d-flex align-items-end">
+                                        <el-button
+                                            type="primary"
+                                            @click="applyDateFilter"
+                                            :disabled="!dateFilters.startDate || !dateFilters.endDate"
+                                            style="margin-right: 10px;">
+                                            <i class="fa fa-filter"></i> Aplicar Filtro
+                                        </el-button>
+                                        <el-button
+                                            v-if="hasActiveDateFilter"
+                                            type="secondary"
+                                            @click="clearDateFilter">
+                                            <i class="fa fa-times"></i> Limpiar
+                                        </el-button>
+                                    </div>
+                                </div>
+                                <div v-if="hasActiveDateFilter" class="alert alert-info mt-2">
+                                    <i class="fa fa-info-circle"></i>
+                                    Filtro activo: {{ formatDate(dateFilters.appliedStartDate) }} - {{ formatDate(dateFilters.appliedEndDate) }}
+                                </div>
+                            </div>
+                        </div>
+                    </div>
                 </div>
 
                 <!-- Columnas mostrar/ocultar -->
@@ -367,12 +417,56 @@
                             <th v-if="columns.plan.visible">Plan</th>
                             <th v-if="columns.correo.visible">Correo</th>
                             <th v-if="columns.entorno.visible">Entorno</th>
-                            <th v-if="columns.total_comprobantes.visible" class="text-center">Total de<br>Comprobantes</th>
-                            <th v-if="columns.notificaciones.visible" class="text-center">Notificaciones</th>
-                            <th v-if="columns.comprobantes_ciclo.visible" class="text-center">Comprobantes<br>Ciclo Facturacion</th>
-                            <th v-if="columns.usuarios.visible" class="text-center">Usuarios</th>
-                            <th v-if="columns.sucursales.visible" class="text-center">Sucursales</th>
-                            <th v-if="columns.ventas_mes.visible" class="text-center">Ventas (Mes)</th>
+                            <th v-if="columns.total_comprobantes.visible" class="text-center sortable-header" @click="sortBy('total_comprobantes')">
+                                Total de<br>Comprobantes
+                                <span class="sort-icons">
+                                    <i class="fas fa-sort" v-if="sorting.column !== 'total_comprobantes'"></i>
+                                    <i class="fas fa-sort-up" v-if="sorting.column === 'total_comprobantes' && sorting.direction === 'asc'"></i>
+                                    <i class="fas fa-sort-down" v-if="sorting.column === 'total_comprobantes' && sorting.direction === 'desc'"></i>
+                                </span>
+                            </th>
+                            <th v-if="columns.notificaciones.visible" class="text-center sortable-header" @click="sortBy('notificaciones')">
+                                Notificaciones
+                                <span class="sort-icons">
+                                    <i class="fas fa-sort" v-if="sorting.column !== 'notificaciones'"></i>
+                                    <i class="fas fa-sort-up" v-if="sorting.column === 'notificaciones' && sorting.direction === 'asc'"></i>
+                                    <i class="fas fa-sort-down" v-if="sorting.column === 'notificaciones' && sorting.direction === 'desc'"></i>
+                                </span>
+                            </th>
+                            <th v-if="columns.inicio_ciclo.visible" class="text-end">Inicio <br>Ciclo Facturacion</th>
+                            <th v-if="columns.comprobantes_ciclo.visible" class="text-center sortable-header" @click="sortBy('comprobantes_ciclo')">
+                                Comprobantes<br>Ciclo Facturacion
+                                <span class="sort-icons">
+                                    <i class="fas fa-sort" v-if="sorting.column !== 'comprobantes_ciclo'"></i>
+                                    <i class="fas fa-sort-up" v-if="sorting.column === 'comprobantes_ciclo' && sorting.direction === 'asc'"></i>
+                                    <i class="fas fa-sort-down" v-if="sorting.column === 'comprobantes_ciclo' && sorting.direction === 'desc'"></i>
+                                </span>
+                            </th>
+                            <th v-if="columns.usuarios.visible" class="text-center sortable-header" @click="sortBy('usuarios')">
+                                Usuarios
+                                <span class="sort-icons">
+                                    <i class="fas fa-sort" v-if="sorting.column !== 'usuarios'"></i>
+                                    <i class="fas fa-sort-up" v-if="sorting.column === 'usuarios' && sorting.direction === 'asc'"></i>
+                                    <i class="fas fa-sort-down" v-if="sorting.column === 'usuarios' && sorting.direction === 'desc'"></i>
+                                </span>
+                            </th>
+                            <th v-if="columns.sucursales.visible" class="text-center sortable-header" @click="sortBy('sucursales')">
+                                Sucursales
+                                <span class="sort-icons">
+                                    <i class="fas fa-sort" v-if="sorting.column !== 'sucursales'"></i>
+                                    <i class="fas fa-sort-up" v-if="sorting.column === 'sucursales' && sorting.direction === 'asc'"></i>
+                                    <i class="fas fa-sort-down" v-if="sorting.column === 'sucursales' && sorting.direction === 'desc'"></i>
+                                </span>
+                            </th>
+                            <th v-if="columns.ventas_mes.visible" class="text-center sortable-header" @click="sortBy('ventas_mes')">
+                                Ventas (Mes)
+                                <span class="sort-icons">
+                                    <i class="fas fa-sort" v-if="sorting.column !== 'ventas_mes'"></i>
+                                    <i class="fas fa-sort-up" v-if="sorting.column === 'ventas_mes' && sorting.direction === 'asc'"></i>
+                                    <i class="fas fa-sort-down" v-if="sorting.column === 'ventas_mes' && sorting.direction === 'desc'"></i>
+                                </span>
+                            </th>
+                            <th v-if="columns.fecha_creacion.visible" class="text-center">F.Creación</th>
                             <th v-if="columns.consultas_api.visible" class="text-center">Consultas <br>API Peru <br>(mes)</th>
                             <th v-if="columns.notas_venta.visible" class="text-center">Cant. <br>Notas de venta</th>
                             <th v-if="columns.total_mes.visible" class="text-center">Total<br><small>(Comprobantes <br>por mes)</small></th>
@@ -393,8 +487,8 @@
                         </tr>
                         </thead>
                         <tbody>
-                            <tr v-for="(row, index) in filteredRecords" :key="index">
-                            <td>{{ index + 1 }}</td>
+                            <tr v-for="(row, index) in paginatedRecords" :key="index">
+                            <td>{{ ((pagination.currentPage - 1) * pagination.itemsPerPage) + index + 1 }}</td>
                             <td class="sticky-column">
                                 <!-- {{ row.hostname }} -->
                                 <a :href="`http://${row.hostname}`"
@@ -481,6 +575,21 @@
                                     </span>
                                 </template>
                             </td>
+                            <td v-if="columns.inicio_ciclo.visible">
+                                <template v-if="row.start_billing_cycle">
+                                    <span></span>
+                                    <span>{{ row.start_billing_cycle }}</span>
+                                </template>
+                                <template v-else>
+                                    <el-date-picker
+                                        v-model="row.select_date_billing"
+                                        placeholder="..."
+                                        type="date"
+                                        value-format="yyyy-MM-dd"
+                                        @change="setStartBillingCycle($event, row.id)"
+                                    ></el-date-picker>
+                                </template>
+                            </td>
 
                             <td v-if="columns.comprobantes_ciclo.visible" class="text-center">
                                 <strong>
@@ -554,6 +663,7 @@
                             </td>
 
 
+                            <td v-if="columns.fecha_creacion.visible" class="text-center">{{ row.created_at }}</td>
                             <td v-if="columns.consultas_api.visible">{{ row.queries_to_apiperu }}</td>
 
                             <td v-if="columns.notas_venta.visible" class="text-center"><strong>{{ row.count_sales_notes }}</strong></td>
@@ -693,7 +803,51 @@
                         </tbody>
                     </table>
                 </div>
-                </div>                
+                </div>
+                
+                <!-- Controles de paginación -->
+                <div class="row mt-3">
+                    <div class="col-md-6 d-flex align-items-center">
+                        <div class="pagination-info">
+                            <span class="text-muted">
+                                Mostrando {{ paginationInfo.start }} a {{ paginationInfo.end }} de {{ paginationInfo.total }} registros
+                            </span>
+                        </div>
+                    </div>
+                    <div class="col-md-6">
+                        <div class="d-flex justify-content-end align-items-center">
+                            <!-- Selector de elementos por página -->
+                            <div class="me-3">
+                                <label class="me-2 text-muted">Mostrar:</label>
+                                <el-select 
+                                    v-model="pagination.itemsPerPage" 
+                                    @change="changeItemsPerPage"
+                                    size="small"
+                                    style="width: 80px;">
+                                    <el-option 
+                                        v-for="option in pagination.itemsPerPageOptions" 
+                                        :key="option" 
+                                        :label="option" 
+                                        :value="option">
+                                    </el-option>
+                                </el-select>
+                            </div>
+                            
+                            <!-- Navegación de páginas -->
+                            <div class="pagination-controls">
+                                <el-pagination
+                                    @current-change="changePage"
+                                    :current-page="pagination.currentPage"
+                                    :page-size="pagination.itemsPerPage"
+                                    :total="filteredRecords.length"
+                                    layout="prev, pager, next"
+                                    :hide-on-single-page="false"
+                                    small>
+                                </el-pagination>
+                            </div>
+                        </div>
+                    </div>
+                </div>
             </div>
         </div>
 
@@ -783,6 +937,41 @@ th.sticky-column {
         margin-top: 1rem;
     }
 }
+
+/* Estilos para paginación */
+.pagination-info {
+    font-size: 14px;
+}
+
+.pagination-controls .el-pagination {
+    padding: 0;
+}
+
+.pagination-controls .el-pagination .el-pager li {
+    min-width: 30px;
+    height: 30px;
+    line-height: 30px;
+    font-size: 13px;
+}
+
+.pagination-controls .el-pagination .btn-prev,
+.pagination-controls .el-pagination .btn-next {
+    height: 30px;
+    line-height: 30px;
+    font-size: 13px;
+}
+
+@media (max-width: 768px) {
+    .pagination-info,
+    .pagination-controls {
+        text-align: center;
+        margin-bottom: 10px;
+    }
+    
+    .col-md-6 .d-flex {
+        justify-content: center !important;
+    }
+}
 </style>
 <script>
 // import CompaniesForm from "./form.vue";
@@ -828,8 +1017,6 @@ export default {
             resource: "clients",
             recordId: null,
             records: [],
-            isLoading: true,
-            checkLimitUsers: true,
             text_limit_doc: null,
             text_limit_users: null,
             loaded: false,
@@ -840,6 +1027,24 @@ export default {
                 entorno: "",
                 plan: "",
                 bloqueo: ""
+            },
+            // Propiedades para paginación
+            pagination: {
+                currentPage: 1,
+                itemsPerPage: 20,
+                itemsPerPageOptions: [5, 10, 20, 50, 100]
+            },
+            // Propiedades para ordenamiento
+            sorting: {
+                column: null,
+                direction: 'asc' // 'asc' o 'desc'
+            },
+            // Propiedades para filtro de fechas
+            dateFilters: {
+                startDate: null,
+                endDate: null,
+                appliedStartDate: null,
+                appliedEndDate: null
             },
             dataChartLine: {
                 labels: [],
@@ -964,38 +1169,16 @@ export default {
             if (line && line.labels && line.data) {
                 this.dataChartLine.labels = line.labels;
                 this.dataChartLine.datasets[0].data = line.data;
-                this.total_documents = response.data.total_documents || 0;
-                
-                // Mostrar advertencia si hubo errores en el servidor
-                if (response.data.error) {
-                    this.$message.warning(response.data.error);
-                }
+                this.total_documents = response.data.total_documents;
                 
                 this.$nextTick(() => {
                     this.chartDataLoaded = true;
                 });
-            } else {
-                // Si no hay datos, inicializar con valores vacíos
-                this.dataChartLine.labels = ['Ene', 'Feb', 'Mar', 'Abr', 'May', 'Jun', 'Jul', 'Ago', 'Set', 'Oct', 'Nov', 'Dic'];
-                this.dataChartLine.datasets[0].data = [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0];
-                this.total_documents = 0;
-                this.chartDataLoaded = true;
             }
         } catch (error) {
             console.error('Error loading chart data:', error);
-            
-            // Mostrar mensaje de error al usuario
-            if (error.response && error.response.status === 500) {
-                this.$message.error('Error al cargar los datos del gráfico. Por favor, contacte al administrador.');
-            } else {
-                this.$message.error('No se pudieron cargar los datos del gráfico.');
-            }
-            
-            // Inicializar con datos vacíos para que el gráfico se muestre
-            this.dataChartLine.labels = ['Ene', 'Feb', 'Mar', 'Abr', 'May', 'Jun', 'Jul', 'Ago', 'Set', 'Oct', 'Nov', 'Dic'];
-            this.dataChartLine.datasets[0].data = [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0];
-            this.total_documents = 0;
-            this.chartDataLoaded = true;
+            this.dataChartLine.labels = [];
+            this.dataChartLine.datasets[0].data = [];
         }
         
         this.loaded = true;
@@ -1013,7 +1196,6 @@ export default {
             this.getData();
         });
         this.getData();
-        this.checkLimit();
 
         this.text_limit_doc = "El límite de comprobantes fue superado";
         this.text_limit_users = "El límite de usuarios fue superado";
@@ -1064,7 +1246,32 @@ export default {
                 });
             }
 
+            // Aplicar ordenamiento si hay una columna seleccionada
+            if (this.sorting.column) {
+                filtered = this.sortRecords(filtered, this.sorting.column, this.sorting.direction);
+            }
+
             return filtered;
+        },
+        // Registros paginados para mostrar en la tabla
+        paginatedRecords() {
+            const start = (this.pagination.currentPage - 1) * this.pagination.itemsPerPage;
+            const end = start + this.pagination.itemsPerPage;
+            return this.filteredRecords.slice(start, end);
+        },
+        // Total de páginas
+        totalPages() {
+            return Math.ceil(this.filteredRecords.length / this.pagination.itemsPerPage);
+        },
+        // Información de paginación
+        paginationInfo() {
+            const start = (this.pagination.currentPage - 1) * this.pagination.itemsPerPage + 1;
+            const end = Math.min(start + this.pagination.itemsPerPage - 1, this.filteredRecords.length);
+            return {
+                start: this.filteredRecords.length > 0 ? start : 0,
+                end: end,
+                total: this.filteredRecords.length
+            };
         },
         availablePlans() {
             const plans = [...new Set(this.records.map(record => record.plan).filter(plan => plan))];
@@ -1080,27 +1287,12 @@ export default {
                 this.filters.plan ||
                 this.filters.bloqueo !== ""
             );
+        },
+        hasActiveDateFilter() {
+            return !!(this.dateFilters.appliedStartDate && this.dateFilters.appliedEndDate);
         }
     },
     methods: {
-        checkLimit() {
-            this.isLoading = true;
-            this.$http.get('clients/confirm-limit-reseller')
-            .then(response => {
-                if (response.data.success) {
-                    this.checkLimitUsers = true;
-                } else {
-                    this.checkLimitUsers = false;
-                }
-            })
-            .finally(() => {
-                this.isLoading = false;
-            })
-            .catch(error => {
-                console.error('Error al verificar el límite:', error);
-                this.checkLimitUsers = false;
-            });
-        },
         saveColumnVisibility() {
             localStorage.setItem('columnVisibilityClients', JSON.stringify(this.columns));
         },
@@ -1113,6 +1305,9 @@ export default {
         applyFilters() {
             console.log('Filtros aplicados:', this.filters);
             
+            // Resetear a la primera página cuando se aplican filtros
+            this.pagination.currentPage = 1;
+            
             this.$nextTick(() => {
                 const totalRecords = this.records.length;
                 const filteredCount = this.filteredRecords.length;
@@ -1123,11 +1318,119 @@ export default {
                 }
             });
         },
+        // Métodos para paginación
+        changePage(page) {
+            this.pagination.currentPage = page;
+        },
+        changeItemsPerPage() {
+            // Resetear a la primera página cuando se cambia el número de elementos por página
+            this.pagination.currentPage = 1;
+        },
+        // Métodos para ordenamiento
+        sortBy(column) {
+            if (this.sorting.column === column) {
+                // Si ya está ordenando por esta columna, cambiar dirección
+                this.sorting.direction = this.sorting.direction === 'asc' ? 'desc' : 'asc';
+            } else {
+                // Nueva columna, empezar con ascendente
+                this.sorting.column = column;
+                this.sorting.direction = 'asc';
+            }
+            // Resetear a la primera página cuando se ordena
+            this.pagination.currentPage = 1;
+        },
+        sortRecords(records, column, direction) {
+            return [...records].sort((a, b) => {
+                let valueA, valueB;
+                
+                switch (column) {
+                    case 'total_comprobantes':
+                        valueA = parseInt(a.count_doc) || 0;
+                        valueB = parseInt(b.count_doc) || 0;
+                        break;
+                    case 'notificaciones':
+                        valueA = (parseInt(a.document_not_sent) || 0) + 
+                                (parseInt(a.document_to_be_regularized) || 0) + 
+                                (parseInt(a.document_to_be_canceled) || 0);
+                        valueB = (parseInt(b.document_not_sent) || 0) + 
+                                (parseInt(b.document_to_be_regularized) || 0) + 
+                                (parseInt(b.document_to_be_canceled) || 0);
+                        break;
+                    case 'comprobantes_ciclo':
+                        valueA = parseInt(a.count_doc_month) || 0;
+                        valueB = parseInt(b.count_doc_month) || 0;
+                        break;
+                    case 'usuarios':
+                        valueA = parseInt(a.count_user) || 0;
+                        valueB = parseInt(b.count_user) || 0;
+                        break;
+                    case 'sucursales':
+                        valueA = parseInt(a.quantity_establishments) || 0;
+                        valueB = parseInt(b.quantity_establishments) || 0;
+                        break;
+                    case 'ventas_mes':
+                        valueA = parseFloat(a.monthly_sales_total) || 0;
+                        valueB = parseFloat(b.monthly_sales_total) || 0;
+                        break;
+                    default:
+                        return 0;
+                }
+                
+                if (direction === 'asc') {
+                    return valueA - valueB;
+                } else {
+                    return valueB - valueA;
+                }
+            });
+        },
         clearFilters() {
             this.filters.entorno = "";
             this.filters.plan = "";
             this.filters.bloqueo = "";
             this.searchQuery = "";
+            // Resetear paginación al limpiar filtros
+            this.pagination.currentPage = 1;
+        },
+        // Métodos para filtro de fechas
+        onDateFilterChange() {
+            // Este método se ejecuta cuando cambian las fechas pero no aplica el filtro automáticamente
+            console.log('Fechas seleccionadas:', this.dateFilters.startDate, this.dateFilters.endDate);
+        },
+        applyDateFilter() {
+            if (!this.dateFilters.startDate || !this.dateFilters.endDate) {
+                this.$message.warning('Por favor selecciona ambas fechas');
+                return;
+            }
+            
+            if (new Date(this.dateFilters.startDate) > new Date(this.dateFilters.endDate)) {
+                this.$message.error('La fecha de inicio no puede ser mayor que la fecha de fin');
+                return;
+            }
+            
+            // Guardar las fechas aplicadas
+            this.dateFilters.appliedStartDate = this.dateFilters.startDate;
+            this.dateFilters.appliedEndDate = this.dateFilters.endDate;
+            
+            // Recargar datos con el filtro de fechas
+            this.getData();
+            
+            this.$message.success('Filtro de fechas aplicado correctamente');
+        },
+        clearDateFilter() {
+            this.dateFilters.startDate = null;
+            this.dateFilters.endDate = null;
+            this.dateFilters.appliedStartDate = null;
+            this.dateFilters.appliedEndDate = null;
+            
+            // Recargar datos sin filtro de fechas
+            this.getData();
+            
+            this.$message.success('Filtro de fechas eliminado');
+        },
+        formatDate(dateString) {
+            if (!dateString) return '';
+            const date = new Date(dateString);
+            return date.toLocaleDateString('es-ES');
         },
         toggleFilters() {
             this.isFiltersVisible = !this.isFiltersVisible;
@@ -1321,8 +1624,22 @@ export default {
                 });
         },
         getData() {
-            this.$http.get(`/${this.resource}/records`).then(response => {
+            // Construir parámetros para la petición
+            let params = {};
+            
+            // Agregar parámetros de fecha si están aplicados
+            if (this.dateFilters.appliedStartDate && this.dateFilters.appliedEndDate) {
+                params.start_date = this.dateFilters.appliedStartDate;
+                params.end_date = this.dateFilters.appliedEndDate;
+            }
+            
+            this.$http.get(`/${this.resource}/records`, { params }).then(response => {
                 this.records = response.data.data;
+                console.log('Datos recibidos:', this.records);
+                console.log('Parámetros enviados:', params);
+            }).catch(error => {
+                console.error('Error al obtener datos:', error);
+                this.$message.error('Error al cargar los datos');
             });
         },
         clickCreate(recordId = null) {
@@ -1409,3 +1726,42 @@ export default {
     }
 };
 </script>
+
+<style scoped>
+/* Estilos para ordenamiento */
+.sortable-header {
+    cursor: pointer;
+    user-select: none;
+    position: relative;
+    transition: background-color 0.2s ease;
+}
+
+.sortable-header:hover {
+    background-color: rgba(0, 0, 0, 0.05);
+}
+
+.sort-icons {
+    margin-left: 5px;
+    font-size: 12px;
+    color: #999;
+    display: inline-block;
+    width: 12px;
+}
+
+.sortable-header:hover .sort-icons {
+    color: #666;
+}
+
+.sortable-header .fas.fa-sort-up,
+.sortable-header .fas.fa-sort-down {
+    color: #004387;
+}
+
+/* Estilos responsivos para ordenamiento */
+@media (max-width: 768px) {
+    .sort-icons {
+        font-size: 10px;
+        margin-left: 3px;
+    }
+}
+</style>

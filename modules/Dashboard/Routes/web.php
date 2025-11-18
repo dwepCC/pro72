@@ -6,7 +6,9 @@ if($current_hostname) {
     Route::domain($current_hostname->fqdn)->group(function () {
         Route::middleware(['auth', 'locked.tenant', 'check.email.verified'])->group(function () {
 
-            Route::redirect('/', '/dashboard');
+            Route::redirect('/', '/inicio');
+            Route::get('/inicio', 'DashboardController@inicio')->name('tenant.dashboard.inicio');
+            Route::get('/soporte', 'DashboardController@soporte')->name('tenant.dashboard.soporte');
 
             Route::prefix('dashboard')->group(function () {
                 Route::get('/', 'DashboardController@index')->name('tenant.dashboard.index');

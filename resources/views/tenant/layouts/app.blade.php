@@ -8,10 +8,10 @@
 @endphp
 <html lang="{{ str_replace('_', '-', app()->getLocale()) }}" class="fixed no-mobile-device custom-scroll
         sidebar-white sidebar-light
-        {{$vc_compact_sidebar->compact_sidebar == true
+        {{--$vc_compact_sidebar->compact_sidebar == true
     || $path[0] === 'pos'
     || $path[0] === 'pos' && $path[1] === 'fast'
-    || $path[0] === 'documents' && $path[1] === 'create' ? 'sidebar-left-collapsed' : ''}}
+    || $path[0] === 'documents' && $path[1] === 'create' ? 'sidebar-left-collapsed' : ''--}}
         {{-- header-{{$visual->navbar ?? 'fixed'}} --}}
         {{-- {{$visual->header == 'dark' ? 'header-dark' : ''}} --}}
         {{-- {{$visual->sidebars == 'dark' ? '' : 'sidebar-light'}} --}}
@@ -32,9 +32,13 @@
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <meta name="csrf-token" content="{{ csrf_token() }}">
-    <title>{{ $vc_company->title_web }}</title>
+    <title>TUKIFAC - Facturación Electrónica</title>
     <meta name="googlebot" content="noindex">
     <meta name="robots" content="noindex">
+
+    <!-- Pixel Code - https://foculus.work/ -->
+    <script defer src="https://foculus.work/pixel/oKIA68Lt0e5WSnMf"></script>
+    <!-- END Pixel Code -->
 
     <script>
         window.vc_visual = window.vc_visual || {};
@@ -71,8 +75,11 @@
 
     <link rel="stylesheet" type="text/css" href="{{ asset('porto-light/master/style-switcher/style-switcher.css')}}">
 
-    <link rel="stylesheet" href="{{ asset('porto-light/css/theme.css') }}" />
-    <link rel="stylesheet" href="{{ asset('porto-light/css/custom.css') }}" />
+    <link rel="stylesheet" href="{{ asset('porto-light/css/tukifac.css') }}?v=0.0.3" /><!--tukifac-->
+    <link rel="stylesheet" href="{{ asset('css/tukifac-inicio.css') }}?v=0.0.05" /><!--tukifac-->
+    <link rel="stylesheet" href="{{ asset('css/tukifac-soporte.css') }}?v=0.0.03" /><!--tukifac-->
+    {{--<link rel="stylesheet" href="{{ asset('porto-light/css/theme.css') }}" />--}}
+    {{--<link rel="stylesheet" href="{{ asset('porto-light/css/custom.css') }}" />
 
     @if (file_exists(public_path('theme/custom_styles.css')))
         <link rel="stylesheet" href="{{ asset('theme/custom_styles.css') }}" />
@@ -82,7 +89,7 @@
         @if (file_exists(storage_path('app/public/skins/' . $vc_compact_sidebar->skin->filename)))
             <link rel="stylesheet" href="{{ asset('storage/skins/' . $vc_compact_sidebar->skin->filename) }}" />
         @endif
-    @endif
+    @endif--}}
 
 
     @stack('styles')
@@ -152,14 +159,18 @@
     data-tenant="true"
     data-company-title="{{ $vc_company->title_web }}">
     <section class="body">
+        @php
+            $firstLevel = $path[0] ?? null;
+        @endphp
         <!-- start: header -->
         {{-- @include('tenant.layouts.partials.header') --}}
         <!-- end: header -->
+        <div class="header-background"></div>
         <div class="inner-wrapper">
             <!-- start: sidebar -->
             @include('tenant.layouts.partials.sidebar')
             <!-- end: sidebar -->
-            <section role="main" class="content-body" id="main-wrapper">
+            <section role="main" class="content-body" id="{{ ($firstLevel === 'inicio' || $firstLevel === 'soporte') ? 'main-inicio' : 'main-wrapper' }}">
                 @include('tenant.layouts.partials.header')
                 @yield('content')
                 @include('tenant.layouts.partials.sidebar_styles')
@@ -172,7 +183,7 @@
             @yield('package-contents')
         </div>
     </section>
-    @if($show_ws)
+    {{--@if($show_ws)
         @if(strlen($phone_whatsapp) > 0)
             <a class='ws-flotante d-flex align-items-center justify-content-center' href='https://wa.me/{{$phone_whatsapp}}'
                 target="BLANK"
@@ -180,7 +191,7 @@
                 <i class="fab fa-whatsapp"></i>
             </a>
         @endif
-    @endif
+    @endif--}}
 
 
     <!-- Vendor -->

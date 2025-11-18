@@ -112,14 +112,20 @@ export default {
             }
 
             const ctx = this.$refs.canvas.getContext('2d');
-            
+            //colores tukifac
+            const customColors = ['#004387', '#16a34a'];
             const cssColors = {
                 info: this.getCSSVariable('--info'),
                 danger: this.getCSSVariable('--danger'),
                 primary: this.getCSSVariable('--primary-color')
             };
             
-            const gradientColors = [
+                        const gradientColors = customColors.map(color => ({
+                base: color,
+                start: this.hexToRgba(color, 0.8),
+                end: this.hexToRgba(color, 0.1)
+            }));
+            /*const gradientColors = [
                 { 
                     base: cssColors.info,
                     start: this.hexToRgba(cssColors.info, 0.2),
@@ -135,7 +141,7 @@ export default {
                     start: this.hexToRgba(cssColors.primary, 0.2),
                     end: this.hexToRgba(cssColors.primary, 0.05)
                 }
-            ];
+            ];*/
         
             const coloredDatasets = this.allData.datasets.map((dataset, index) => {
                 const colorIndex = index % gradientColors.length;

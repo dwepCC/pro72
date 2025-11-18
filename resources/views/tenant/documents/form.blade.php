@@ -2,7 +2,7 @@
 
 @push('styles')
     <style type="text/css">
-        .v-modal {
+        /*.v-modal {
             opacity: 0.2 !important;
         }
         .border-custom {
@@ -12,11 +12,49 @@
         	.inner-wrapper {
 			    padding-top: 60px !important;
 			}
-        }
+        }*/
     </style>
 @endpush
-
+ 
 @section('content')
+{{--tukifac--}}
+         <div class="page-header pr-0">
+            <h2>
+                <a href="/documents">
+                    <svg
+                        xmlns="http://www.w3.org/2000/svg"
+                        width="24"
+                        height="24"
+                        viewBox="0 0 24 24"
+                        fill="none"
+                        style="margin-top: -5px;"
+                        stroke="currentColor"
+                        stroke-width="2"
+                        stroke-linecap="round"
+                        stroke-linejoin="round"
+                        class="feather feather-file-text"
+                    >
+                        <path
+                            d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"
+                        ></path>
+                        <polyline points="14 2 14 8 20 8"></polyline>
+                        <line x1="16" y1="13" x2="8" y2="13"></line>
+                        <line x1="16" y1="17" x2="8" y2="17"></line>
+                        <polyline points="10 9 9 9 8 9"></polyline>
+                    </svg>
+                </a>
+            </h2>
+            <ol class="breadcrumbs">
+                <li class="active"><span>Nuevo Documento</span></li>
+            </ol>
+            <div class="right-wrapper pull-right">
+                <a href="/sale-notes" class="btn btn-custom btn-sm mt-2 mr-2">
+                    <i class="fa fa-arrow-left"></i> 
+                    Volver
+                </a>
+            </div>
+        </div>
+        {{--end tukifac--}}
     <tenant-documents-invoice-generate
         :is_contingency="{{ json_encode($is_contingency) }}"
         :type-user="{{json_encode(Auth::user()->type)}}"

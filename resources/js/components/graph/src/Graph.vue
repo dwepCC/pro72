@@ -208,12 +208,14 @@ export default {
     },
     getSegmentColors(data) {
       const baseColors = [this.colors.primary, this.colors.warning, this.colors.danger];
-
+      const customColors = ['#004387', '#16a34a'];
       return data.map((value, index) => {
-        const color = baseColors[index % baseColors.length];
+        const color = customColors[index % customColors.length];
         return {
-          backgroundColor: this.hexToRgba(color, 0.6),
-          borderColor: this.hexToRgba(color, 1)
+            backgroundColor: this.hexToRgba(color, 0.8),
+            borderColor: this.hexToRgba(color, 1),
+            hoverBackgroundColor: this.hexToRgba(color, 0.9),
+            hoverBorderColor: this.hexToRgba(color, 1)
         };
       });
     },

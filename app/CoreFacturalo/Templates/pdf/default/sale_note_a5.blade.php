@@ -214,7 +214,7 @@ foreach ($document->items as $row) {
             $showLoteColumn = false;
 
             foreach ($document->items as $row) {
-                if ($row->item->lots) {
+                if ($row->item->lots ?? []) {
                     $showSerieColumn = true;
                     break;
                 }

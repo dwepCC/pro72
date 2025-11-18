@@ -178,7 +178,7 @@
         overflow: hidden;
     }
     .uploader .el-upload:hover {
-        border-color: #409EFF;
+        border-color: #004387;
     }
     .uploader-icon {
         font-size: 28px;

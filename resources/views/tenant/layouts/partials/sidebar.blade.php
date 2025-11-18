@@ -3,7 +3,7 @@
 use App\Models\Tenant\Configuration;
 use Modules\Inventory\Models\InventoryConfiguration;
 
-$configuration = Configuration::first();
+$configuration = Configuration::first(); 
 $firstLevel = $path[0] ?? null;
 $secondLevel = $path[1] ?? null;
 $thridLevel = $path[2] ?? null;
@@ -13,46 +13,40 @@ $inventory_configuration = InventoryConfiguration::getSidebarPermissions();
 ?>
 <aside id="sidebar-left" class="sidebar-left">
     <div class="sidebar-header sidebar-header-desktop">
-        <div class="logo-container-sidebar pe-2">
-            <a href="{{ route('tenant.dashboard.index') }}" class="logo pt-2 pt-md-0">
-                @if($vc_company->logo)
-                    <img src="{{ asset('storage/uploads/logos/' . $vc_company->logo) }}" alt="Logo" class="logo-light"
-                        style="{{ $vc_company->logo_dark ? '' : '--show-light-logo: block;' }}" />
-                @else
-                    <img src="{{ asset('logo/tulogo.png') }}" alt="Logo" />
-                @endif
+        <a href="{{ route('tenant.dashboard.inicio') }}" class="logo pt-2 pt-md-0">
+            {{--@if($vc_company->logo)
+                <img src="{{ asset('storage/uploads/logos/' . $vc_company->logo) }}" alt="Logo" class="logo-light"
+                    style="{{ $vc_company->logo_dark ? '' : '--show-light-logo: block;' }}" />
+            @else--}}
+                <img src="{{ asset('logo/Tukifac-large-ver-2.webp') }}" alt="Logo"/> 
+            {{--@endif
 
-                @if($vc_company->logo_dark)
-                    <img src="{{ asset('storage/uploads/logos/' . $vc_company->logo_dark) }}" alt="Logo" class="logo-dark" />
-                @endif
-            </a>
-        </div>
-        <div class="sidebar-toggle-container d-none d-md-flex">
-            <div class="sidebar-toggle position-relative ms-0 p-0" data-toggle-class="sidebar-left-collapsed" data-target="html"
-                data-fire-event="sidebar-left-toggle" title="Colapsar menú lateral">
-                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="icon icon-tabler icons-tabler-outline icon-tabler-layout-sidebar-left-collapse fa-angle-left"><path stroke="none" d="M0 0h24v24H0z" fill="none"/><path d="M4 4m0 2a2 2 0 0 1 2 -2h12a2 2 0 0 1 2 2v12a2 2 0 0 1 -2 2h-12a2 2 0 0 1 -2 -2z" /><path d="M9 4v16" /> <path class="path-left" d="M15 10l-2 2l2 2" /> </svg>
-                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="icon icon-tabler icons-tabler-outline icon-tabler-layout-sidebar-right-collapse fa-angle-right"><path stroke="none" d="M0 0h24v24H0z" fill="none"/><path d="M4 4m0 2a2 2 0 0 1 2 -2h12a2 2 0 0 1 2 2v12a2 2 0 0 1 -2 2h-12a2 2 0 0 1 -2 -2z" /><path d="M9 4v16" /><path class="path-right" d="M14 10l2 2l-2 2" /></svg>
-            </div>
-        </div>
+            @if($vc_company->logo_dark)
+                <img src="{{ asset('storage/uploads/logos/' . $vc_company->logo_dark) }}" alt="Logo" class="logo-dark" />
+            @endif--}}
+        </a>
         <div class="d-md-none toggle-sidebar-left" data-toggle-class="sidebar-left-opened" data-target="html"
             data-fire-event="sidebar-left-opened">
             <i class="fas fa-times"></i>
         </div>
     </div>
-    <div class="nano">
+            {{--    <div class="empresa-name-container">--}}
+            <span class="empresa-nombre">{{ $vc_company->name }}</span>    
+        {{--</div> --}}
+    <div class="nano"> 
         <div class="sidebar-header sidebar-header-mobile">
             <a href="{{route('tenant.dashboard.index')}}" class="logo pt-2 pt-md-0 logo-container-sidebar">
-                @if($vc_company->logo)
+                {{--@if($vc_company->logo)
                     <img src="{{ asset('storage/uploads/logos/' . $vc_company->logo) }}" alt="Logo" class="logo-light"
                         style="{{ $vc_company->logo_dark ? '' : '--show-light-logo: block;' }}" />
-                @else
-                    <img src="{{ asset('logo/tulogo.png') }}" alt="Logo" />
-                @endif
+                @else--}}
+                    <img src="{{ asset('logo/Tukifac-large-ver-2.webp') }}" alt="Logo" />
+                {{--@endif
 
                 @if($vc_company->logo_dark)
                     <img src="{{ asset('storage/uploads/logos/' . $vc_company->logo_dark) }}" alt="Logo"
                         class="logo-dark" />
-                @endif
+                @endif--}}
             </a>
             <div class="d-md-none toggle-sidebar-left" data-toggle-class="sidebar-left-opened" data-target="html"
                 data-fire-event="sidebar-left-opened">
@@ -62,9 +56,24 @@ $inventory_configuration = InventoryConfiguration::getSidebarPermissions();
         <div class="nano-content nano-content-mobile">
             <nav id="menu" class="nav-main" role="navigation">
                 <ul class="nav nav-main nav-main-mobile">
-                    @if(in_array('dashboard', $vc_modules))
+                    <!--tukifac-->
+                        @if(in_array('dashboard', $vc_modules))
+                        <li class="{{ ($firstLevel === 'inicio') ? 'nav-active' : '' }}">
+                            <a class="nav-link" href="{{ route('tenant.dashboard.inicio') }}">
+                                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24"
+                                    fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+                                    stroke-linejoin="round" class="icon icon-tabler icons-tabler-outline icon-tabler-home">
+                                    <path stroke="none" d="M0 0h24v24H0z" fill="none"/>
+                                    <path d="M5 12l-2 0l9 -9l9 9l-2 0" />
+                                    <path d="M5 12v7a2 2 0 0 0 2 2h10a2 2 0 0 0 2 -2v-7" />
+                                    <path d="M9 21v-6a2 2 0 0 1 2 -2h2a2 2 0 0 1 2 2v6" />
+                                </svg>
+                                <span>Inicio</span> 
+                            </a>
+                        </li>
+                        <!--tukifac-->
                         <li class="{{ ($firstLevel === 'dashboard') ? 'nav-active' : '' }}">
-                            <a class="nav-link dashboard-link" href="{{ route('tenant.dashboard.index') }}">
+                            <a class="nav-link" href="{{ route('tenant.dashboard.index') }}">
                                 <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24"
                                     fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
                                     stroke-linejoin="round"
@@ -74,7 +83,7 @@ $inventory_configuration = InventoryConfiguration::getSidebarPermissions();
                                     <path d="M13.45 11.55l2.05 -2.05" />
                                     <path d="M6.4 20a9 9 0 1 1 11.2 0z" />
                                 </svg>
-                                <span>DASHBOARD</span>
+                                <span>Admin dashboard</span>
                             </a>
                         </li>
                     @endif
@@ -168,7 +177,7 @@ $inventory_configuration = InventoryConfiguration::getSidebarPermissions();
                                     <line x1="16" y1="17" x2="8" y2="17"></line>
                                     <polyline points="10 9 9 9 8 9"></polyline>
                                 </svg>
-                                <span>VENTAS</span>
+                                <span>Ventas</span>
                             </a>
                             <ul class="nav nav-children" style="">
                                 @if(auth()->user()->type != 'integrator' && $vc_company->soap_type_id != '03')
@@ -186,7 +195,7 @@ $inventory_configuration = InventoryConfiguration::getSidebarPermissions();
                                     @if(in_array('list_document', $vc_module_levels))
                                         <li
                                             class="{{ ($firstLevel === 'documents' && $secondLevel != 'create' && $secondLevel != 'not-sent' && $secondLevel != 'regularize-shipping') ? 'nav-active' : '' }}">
-                                            <a class="nav-link" href="{{route('tenant.documents.index')}}">Listado de
+                                            <a class="nav-link" href="{{route('tenant.documents.index')}}">Consulta de
                                                 comprobantes</a>
                                         </li>
                                     @endif
@@ -228,8 +237,7 @@ $inventory_configuration = InventoryConfiguration::getSidebarPermissions();
                                             $firstLevel === 'purchase-quotations' ||
                                             $firstLevel === 'purchase-orders' ||
                                             $firstLevel === 'fixed-asset'
-                                        ) ? 'nav-active nav-expanded' : '' }}
-                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                ">
+                                        ) ? 'nav-active nav-expanded' : '' }}">
                                                         <a class="nav-link" href="#">
                                                             <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24"
                                                                 fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
@@ -525,7 +533,7 @@ $inventory_configuration = InventoryConfiguration::getSidebarPermissions();
                                             <ul class="nav nav-children">
                                                 @if(in_array('cash', $vc_module_levels))
                                                     <li class="{{ ($firstLevel === 'cash') ? 'nav-active' : '' }}">
-                                                        <a class="nav-link" href="{{route('tenant.cash.index')}}">Caja general</a>
+                                                        <a class="nav-link" href="{{route('tenant.cash.index')}}">Caja chica</a>
                                                     </li>
                                                 @endif
                                                 @if(in_array('finances_movements', $vc_module_levels))
@@ -567,12 +575,12 @@ $inventory_configuration = InventoryConfiguration::getSidebarPermissions();
                                                         <a class="nav-link" href="{{route('tenant.finances.global_payments.index')}}">Pagos</a>
                                                     </li>
                                                 @endif
-                                                {{-- @if(in_array('finances_balance', $vc_module_levels))
+                                                @if(in_array('finances_balance', $vc_module_levels))
                                                     <li
                                                         class="{{(($firstLevel === 'finances') && ($secondLevel == 'balance')) ? 'nav-active' : ''}}">
                                                         <a class="nav-link" href="{{route('tenant.finances.balance.index')}}">Balance</a>
                                                     </li>
-                                                @endif --}}
+                                                @endif
                                                 @if(in_array('finances_payment_method_types', $vc_module_levels))
                                                     <li
                                                         class="{{(($firstLevel === 'finances') && ($secondLevel == 'payment-method-types')) ? 'nav-active' : ''}}">
@@ -1437,6 +1445,24 @@ $inventory_configuration = InventoryConfiguration::getSidebarPermissions();
                     </a>
                 </li>
                 @endif -->
+                <li class="{{ ($secondLevel === 'payment_index') ? 'nav-active' : '' }}">
+                    <a class="nav-link" href="{{ route('tenant.payment.index') }}">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="icon icon-tabler icons-tabler-outline icon-tabler-receipt-dollar mr-2"><path stroke="none" d="M0 0h24v24H0z" fill="none"></path> <path d="M5 21v-16a2 2 0 0 1 2 -2h10a2 2 0 0 1 2 2v16l-3 -2l-2 2l-2 -2l-2 2l-2 -2l-3 2"></path> <path d="M14.8 8a2 2 0 0 0 -1.8 -1h-2a2 2 0 1 0 0 4h2a2 2 0 1 1 0 4h-2a2 2 0 0 1 -1.8 -1"></path> <path d="M12 6v10"></path></svg>
+                        <span>Mis Pagos</span> 
+                    </a>
+                </li>
+                <li class="{{ ($firstLevel === 'soporte') ? 'nav-active' : '' }}">
+                    <a class="nav-link" href="{{ route('tenant.dashboard.soporte') }}">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24"
+                            fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+                            stroke-linejoin="round" class="icon icon-tabler icons-tabler-outline icon-tabler-school">
+                            <path stroke="none" d="M0 0h24v24H0z" fill="none"/>
+                            <path d="M22 9l-10 -4l-10 4l10 4l10 -4v6" />
+                            <path d="M6 10.6v5.4a6 3 0 0 0 12 0v-5.4" />
+                        </svg>
+                        <span>Tutoriales</span> 
+                    </a>
+                </li>
                 </ul>
             </nav>
         </div>
@@ -1452,7 +1478,7 @@ $inventory_configuration = InventoryConfiguration::getSidebarPermissions();
         </script>
     </div>
 
-    @if(in_array('users_establishments', $vc_module_levels) || in_array('users', $vc_module_levels) || in_array('configuration', $vc_modules) || in_array('app_2_generator', $vc_modules) || in_array('apps', $vc_modules))
+    {{--@if(in_array('users_establishments', $vc_module_levels) || in_array('users', $vc_module_levels) || in_array('configuration', $vc_modules) || in_array('app_2_generator', $vc_modules) || in_array('apps', $vc_modules))
         <div class="more-config more-config-mobile">
             <div class="nano-content nano-content-config pt-0">
                 <ul class="nav nav-main">
@@ -1487,7 +1513,7 @@ $inventory_configuration = InventoryConfiguration::getSidebarPermissions();
                                 <path d="M21 21v-2a4 4 0 0 0 -3 -3.85" />
                             </svg>
                             Usuarios</a>
-                    </li>
+                    </li> 
                 @endif
                 @if(in_array('users_establishments', $vc_module_levels))
                     <li>
@@ -1559,41 +1585,9 @@ $inventory_configuration = InventoryConfiguration::getSidebarPermissions();
                 @endif
 
             </ul>
-        </div>
-    @endif
+        </div>  
+    @endif--}}
 </aside>
-
-<script>
-    document.addEventListener('DOMContentLoaded', function() {
-        const sidebarToggle = document.querySelector('.sidebar-toggle');
-        
-        if (sidebarToggle) {
-            function updateToggleTitle() {
-                const isCollapsed = document.documentElement.classList.contains('sidebar-left-collapsed');
-                sidebarToggle.setAttribute('title', isCollapsed ? 'Expandir menú lateral' : 'Colapsar menú lateral');
-            }
-            
-            updateToggleTitle();
-            
-            sidebarToggle.addEventListener('click', function() {
-                setTimeout(updateToggleTitle, 50);
-            });
-            
-            const observer = new MutationObserver(function(mutations) {
-                mutations.forEach(function(mutation) {
-                    if (mutation.attributeName === 'class') {
-                        updateToggleTitle();
-                    }
-                });
-            });
-            
-            observer.observe(document.documentElement, {
-                attributes: true,
-                attributeFilter: ['class']
-            });
-        }
-    });
-</script>
 
 <style>
     html.no-overflowscrolling .nano {

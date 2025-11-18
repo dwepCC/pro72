@@ -757,8 +757,10 @@ if ($hostname) {
             Route::get('cuenta/configuration', 'Tenant\AccountController@index')->name('tenant.configuration.index');
             Route::get('cuenta/payment_records', 'Tenant\AccountController@paymentRecords');
             Route::get('cuenta/tables', 'Tenant\AccountController@tables');
+            Route::get('cuenta/info_plan', 'Tenant\AccountController@infoPlan');
             Route::post('cuenta/update_plan', 'Tenant\AccountController@updatePlan');
             Route::post('cuenta/payment_culqui', 'Tenant\AccountController@paymentCulqui')->name('tenant.account.payment_culqui');
+            Route::post('/cuenta/payment_manual', 'Tenant\AccountController@paymentManual')->name('tenant.account.payment_manual');
 
             //Payment Methods
             Route::get('payment_method/records', 'Tenant\PaymentMethodTypeController@records');
@@ -851,6 +853,9 @@ if ($hostname) {
             Route::get('clients', 'System\ClientController@index')->name('system.clients.index');
             Route::get('clients/records', 'System\ClientController@records');
             Route::get('clients/record/{client}', 'System\ClientController@record');
+            Route::get('clients/records/list', 'System\ClientController@recordsListPending');//tukifac
+            Route::post('clients/payment/approve/{id}', 'System\ClientController@approvePayment');//tukifac
+            Route::post('clients/payment/reject/{id}', 'System\ClientController@rejectPayment');//tukifac
 
             Route::get('clients/create', 'System\ClientController@create');
             Route::get('clients/tables', 'System\ClientController@tables');

@@ -27,6 +27,7 @@
     use Illuminate\Support\Str;
     use Illuminate\Support\Facades\Cache;
     use App\Helpers\GuestRegisterHelper;
+use App\Models\System\ClientPayment;
 use App\Models\System\PlanPeriod;
 
     class ClientController extends Controller
@@ -1219,4 +1220,177 @@ use App\Models\System\PlanPeriod;
 
             return $this->generalResponse(true, 'Aun puede registrar más clientes');
         }
+
+    /*tikifac*/ 
+    public function recordsListPending()
+    {
+        $records = DB::table('client_payments')
+            ->where('client_payments.state', '0')
+            ->join('clients', 'client_payments.client_id', '=', 'clients.id')
+            ->select(
+                'client_payments.id',
+                'client_payments.client_id',
+                'client_payments.date_of_payment',
+                'client_payments.payment',
+                'client_payments.reference', 
+                'client_payments.updated_at',
+                'clients.name as client_name',
+                'clients.number as client_ruc',
+                'clients.hostname_id',
+                'clients.email'
+            )
+            ->get();
+
+        return response()->json([
+            'success' => true,
+            'records' => $records
+        ]);
+    }
+
+    // Método para aprobar pagos
+    public function approvePayment($id)
+    {
+        try {
+            // 1. Buscar el pago en la base de datos central
+            $payment = ClientPayment::find($id);
+            
+            if (!$payment) {
+                return response()->json([
+                    'success' => false,
+                    'message' => 'Pago no encontrado'
+                ]);
+            }
+
+            // 2. Obtener información del cliente y hostname
+            $client = Client::with('hostname')->find($payment->client_id);
+            
+            if (!$client || !$client->hostname) {
+                return response()->json([
+                    'success' => false,
+                    'message' => 'Cliente o hostname no encontrado'
+                ]);
+            }
+
+            // 3. Aprobar en la base de datos central
+            $payment->state = 1; // Aprobado
+            $payment->save();
+
+            // 4. Cambiar a la conexión del tenant y aprobar en su base de datos
+            $tenancy = app(Environment::class);
+            $tenancy->tenant($client->hostname->website);
+
+            // Buscar y aprobar el pago en la tabla account_payments del tenant
+            // Asumiendo que hay una relación por referencia o fecha
+            $accountPaymentUpdated = DB::connection('tenant')
+                ->table('account_payments')
+                ->where('reference_id', $payment->id)
+                //->where('date_of_payment', $payment->date_of_payment)
+                ->update(['state' => 1]);
+
+            // Verificar si se actualizó algún registro en el tenant
+            if ($accountPaymentUpdated === 0) {
+                // Revertir el cambio en la base de datos central si no se encontró en tenant
+                $payment->state = 0;
+                $payment->save();
+                
+                return response()->json([
+                    'success' => false,
+                    'message' => 'No se encontró el pago correspondiente en la base de datos del tenant'
+                ]);
+            }
+
+            return response()->json([
+                'success' => true,
+                'message' => 'Pago aprobado correctamente en ambas bases de datos'
+            ]);
+
+        } catch (\Exception $e) {
+            // Si hay error, intentar revertir cambios
+            if (isset($payment) && $payment->state == 1) {
+                $payment->state = 0;
+                $payment->save();
+            }
+            
+            return response()->json([
+                'success' => false,
+                'message' => 'Error al aprobar el pago: ' . $e->getMessage()
+            ]);
+        }
+    }
+
+    // Método para rechazar pagos
+    public function rejectPayment($id)
+    {
+        try {
+            // 1. Buscar el pago en la base de datos central
+            $payment = ClientPayment::find($id);
+            
+            if (!$payment) {
+                return response()->json([
+                    'success' => false,
+                    'message' => 'Pago no encontrado'
+                ]);
+            }
+
+            // 2. Obtener información del cliente y hostname
+            $client = Client::with('hostname')->find($payment->client_id);
+            
+            if (!$client || !$client->hostname) {
+                return response()->json([
+                    'success' => false,
+                    'message' => 'Cliente o hostname no encontrado'
+                ]);
+            }
+
+            // 3. Rechazar en la base de datos central
+            $payment->state = '0'; // Rechazado
+            $payment->reference = null; // Rechazado
+            $payment->save();
+
+            // 4. Cambiar a la conexión del tenant y rechazar en su base de datos
+            $tenancy = app(Environment::class);
+            $tenancy->tenant($client->hostname->website);
+
+            // Buscar y rechazar el pago en la tabla account_payments del tenant
+            // Actualizando state y estableciendo reference_payment como null
+            $accountPaymentUpdated = DB::connection('tenant')
+                ->table('account_payments')
+                ->where('reference_id', $payment->id)
+                //->where('date_of_payment', $payment->date_of_payment)
+                ->update([
+                    'state' => '0', // Rechazado
+                    'reference_payment' => null // Establecer como null al rechazar
+                ]);
+
+            // Verificar si se actualizó algún registro en el tenant
+            if ($accountPaymentUpdated === 0) {
+                // Revertir el cambio en la base de datos central si no se encontró en tenant
+                $payment->state = 0; // Volver al estado original
+                $payment->save();
+                
+                return response()->json([
+                    'success' => false,
+                    'message' => 'No se encontró el pago correspondiente en la base de datos del tenant'
+                ]);
+            }
+
+            return response()->json([
+                'success' => true,
+                'message' => 'Pago rechazado correctamente en ambas bases de datos'
+            ]);
+
+        } catch (\Exception $e) {
+            // Si hay error, intentar revertir cambios
+            if (isset($payment) && $payment->state == 2) {
+                $payment->state = 0; // Volver al estado original
+                $payment->save();
+            }
+            
+            return response()->json([
+                'success' => false,
+                'message' => 'Error al rechazar el pago: ' . $e->getMessage()
+            ]);
+        }
+    }
+    /*end tukifac*/ 
     }

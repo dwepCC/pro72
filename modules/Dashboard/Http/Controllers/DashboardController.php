@@ -44,6 +44,36 @@ class DashboardController extends Controller
         return view('dashboard::index', compact('soap_company','configuration'));
     }
 
+        public function inicio()
+    {
+        if(auth()->user()->type != 'admin' && !auth()->user()->searchModule('dashboard')){
+            return redirect()->route('tenant.documents.index');
+        } elseif (auth()->user()->type == 'admin' && !auth()->user()->searchModule('dashboard')) {
+            return redirect()->route('tenant.documents.index');
+        }
+
+        $company = Company::select('soap_type_id')->first();
+        $soap_company  = $company->soap_type_id;
+        $configuration = Configuration::first();
+
+        return view('dashboard::inicio', compact('soap_company','configuration'));
+    }
+
+        public function soporte()
+    {
+        if(auth()->user()->type != 'admin' && !auth()->user()->searchModule('dashboard')){
+            return redirect()->route('tenant.documents.index');
+        } elseif (auth()->user()->type == 'admin' && !auth()->user()->searchModule('dashboard')) {
+            return redirect()->route('tenant.documents.index');
+        }
+
+        $company = Company::select('soap_type_id')->first();
+        $soap_company  = $company->soap_type_id;
+        $configuration = Configuration::first();
+
+        return view('dashboard::soporte', compact('soap_company','configuration'));
+    }
+    
     public function filter()
     {
         return [
