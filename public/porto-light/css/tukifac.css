@@ -610,7 +610,7 @@ html.dark .header .logo-container .topbar-links {
     .sidebar-left,
     .content-body {
         display: block;
-        margin-left: 60px;
+        margin-left: 0px;
     }
 
     .content-body {
@@ -657,7 +657,7 @@ html.dark .header .logo-container .topbar-links {
 
     .content-body {
         padding: 0 15px 15px;
-        margin-left: 255px;
+        margin-left: 0px;
     }
 
     .page-header {
@@ -752,6 +752,12 @@ html.dark .header .logo-container .topbar-links {
     html.sidebar-left-collapsed.sidebar-right-opened .sidebar-left {
         margin-left: -300px;
     }
+   #main-wrapper{
+    margin-top: 50px !important;
+   }
+   .page-header{
+    margin: 10px 0 0 0 !important; 
+   } 
 }
 /* iOS10 Content Width Fix */
 @media (min-width: 768px) {
@@ -22123,7 +22129,7 @@ div.tukifac-dashboard {
 }
 
 .sidebar-header-mobile {
-    display: none !important;
+    /*display: none !important;*/
 }
 
 html:not(.sidebar-left-collapsed) .sidebar-toggle .fa-angle-right {

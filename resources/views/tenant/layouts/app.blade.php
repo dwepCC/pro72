@@ -75,7 +75,7 @@
 
     <link rel="stylesheet" type="text/css" href="{{ asset('porto-light/master/style-switcher/style-switcher.css')}}">
 
-    <link rel="stylesheet" href="{{ asset('porto-light/css/tukifac.css') }}?v=0.0.3" /><!--tukifac-->
+    <link rel="stylesheet" href="{{ asset('porto-light/css/tukifac.css') }}?v=0.0.8" /><!--tukifac-->
     <link rel="stylesheet" href="{{ asset('css/tukifac-inicio.css') }}?v=0.0.05" /><!--tukifac-->
     <link rel="stylesheet" href="{{ asset('css/tukifac-soporte.css') }}?v=0.0.03" /><!--tukifac-->
     {{--<link rel="stylesheet" href="{{ asset('porto-light/css/theme.css') }}" />--}}
@@ -146,6 +146,85 @@
         html.dark .logo-dark {
             display: var(--show-dark-logo, block);
         }
+
+        /* Spinner de carga global TUKIFAC */
+/* Spinner de carga global TUKIFAC */
+.global-loader {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(255, 255, 255, 0.5);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    z-index: 9999;
+    /*transition: opacity 0.3s ease;*/
+    /*backdrop-filter: blur(10px);*/
+}
+
+.global-loader .loader-content {
+    text-align: center;
+    /*background: white;*/
+    padding: 3rem;
+    border-radius: 12px;
+    box-shadow: 0 10px 30px rgba(0,0,0,0);
+    /*border: 1px solid #e0e0e0;*/
+}
+
+/* Estilos para la imagen del loader */
+.global-loader .loader-image {
+    width: 150px;
+    /*height: 80px;*/
+    object-fit: contain;
+    animation: pulse 1.5s ease-in-out infinite;
+    margin-bottom: 0.2rem;
+}
+
+/* Animación de pulso para la imagen */
+@keyframes pulse {
+    0% {
+        transform: scale(1);
+        opacity: 1;
+    }
+    50% {
+        transform: scale(1.05);
+        opacity: 0.8;
+    }
+    100% {
+        transform: scale(1);
+        opacity: 1;
+    }
+}
+
+.global-loader p {
+    margin-top: 1rem;
+    color: #333;
+    /*font-weight: 600;*/
+    font-size: 1rem;
+    font-family: 'Montserrat', sans-serif;
+}
+
+.global-loader.hidden {
+    opacity: 0;
+    pointer-events: none;
+}
+
+/* Dark mode support */
+html.dark .global-loader {
+    background: rgba(0, 0, 0, 0.95);
+}
+
+html.dark .global-loader .loader-content {
+    background: #2d2d2d;
+    border-color: #404040;
+}
+
+html.dark .global-loader p {
+    color: white;
+}
+        /* Spinner de carga global TUKIFAC */
     </style>
 
     @if ($vc_company->favicon)
@@ -158,6 +237,15 @@
 <body class="pr-0"
     data-tenant="true"
     data-company-title="{{ $vc_company->title_web }}">
+
+<!-- Spinner de carga global TUKIFAC-->
+<div id="global-loader" class="global-loader">
+    <div class="loader-content">
+        <img src="{{ asset('storage/tuki-load.webp') }}" alt="TUKIFAC" class="loader-image">
+        <p class="">Cargando...</p>
+    </div>
+</div>
+
     <section class="body">
         @php
             $firstLevel = $path[0] ?? null;
@@ -280,6 +368,54 @@
 
     </script>
     <!-- <script src="//code.tidio.co/1vliqewz9v7tfosw5wxiktpkgblrws5w.js"></script> -->
+
+    <!--tukifac-->
+    <script>
+        // Control del spinner global
+        document.addEventListener('DOMContentLoaded', function() {
+            const globalLoader = document.getElementById('global-loader');
+            
+            // Ocultar spinner cuando la página esté completamente cargada
+            window.addEventListener('load', function() {
+                setTimeout(() => {
+                    if(globalLoader) {
+                        globalLoader.classList.add('hidden');
+                        // Remover completamente después de la animación
+                        setTimeout(() => {
+                            globalLoader.remove();
+                        }, 300);
+                    }
+                }, 500);
+            });
+
+            // Mostrar body cuando el spinner se oculte
+            document.body.classList.add('visible');
+        });
+
+        // Función global para mostrar/ocultar spinner
+        window.showLoader = function(show = true) {
+            let loader = document.getElementById('global-loader');
+            
+            if (!loader && show) {
+                // Crear loader si no existe
+                loader = document.createElement('div');
+                loader.id = 'global-loader';
+                loader.className = 'global-loader';
+                loader.innerHTML = `
+                    <div class="loader-content">
+                        <img src="{{ asset('img/tukifac-logo-loader.png') }}" alt="TUKIFAC" class="loader-image">
+                        <p class="mt-2">Procesando TUKIFAC...</p>
+                    </div>
+                `;
+                document.body.prepend(loader);
+            }
+            
+            if (loader) {
+                loader.classList.toggle('hidden', !show);
+            }
+        };
+</script>
+<!--scripT TUKIFAC-->
 </body>
 
 </html>
